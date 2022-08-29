@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=investments
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - investments_network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 16379:6379
+    volumes:
+      - redis_data:/bitnami/redis/data
+    networks:
+      - investments_network
+
+volumes:
+  postgres_data:
+    name: investments_postgres_data
+    driver: local
+  redis_data:
+    name: investments_redis_data
+    driver: local
+
+networks:
+  investments_network:
+    driver: bridge
