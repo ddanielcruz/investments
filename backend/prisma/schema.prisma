@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Asset {
+  id Int @default(autoincrement()) @id
+  name String
+  ticker String
+  type AssetType
+  transactions Transaction[]
+  symbols AssetSymbol[]
+}
+
+model AssetSymbol {
+  id Int @default(autoincrement()) @id
+  asset_id Int
+  symbol String
+  provider AssetProvider
+  asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
+}
+
+model Broker {
+  id Int @default(autoincrement()) @id
+  name String
+  supported_types AssetType[]
+  transactions Transaction[]
+}
+
+model Transaction {
+  id Int @default(autoincrement()) @id
+  asset_id Int
+  broker_id Int
+  unit_price Decimal
+  quantity Decimal
+  fee Decimal
+  date DateTime
+  type TransactionType
+  asset Asset @relation(fields: [asset_id], references: [id], onDelete: Restrict)
+  broker Broker @relation(fields: [broker_id], references: [id], onDelete: Restrict)
+}
+
+enum AssetType {
+  Stock
+  Crypto
+  FixedIncome
+}
+
+enum AssetProvider {
+  CoinMarketcap
+  AlphaVantage
+}
+
+enum TransactionType {
+  Buy
+  Sell
+}
