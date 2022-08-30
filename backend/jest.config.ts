@@ -10,5 +10,6 @@ export default {
   coverageProvider: 'v8',
   coverageDirectory: 'coverage',
   collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts', '!src/**/connection.ts'],
-  coveragePathIgnorePatterns: ['/node_modules/', '/dist/']
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
+  modulePathIgnorePatterns: ['<rootDir>/tests/', '<rootDir>/database/repositories/index.ts']
 } as Config
