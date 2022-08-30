@@ -1,22 +1,22 @@
 [
   {
     "name": "Binance",
-    "supported_types": ["Crypto"]
+    "supportedTypes": ["Crypto"]
   },
   {
     "name": "Wallet",
-    "supported_types": ["Crypto"]
+    "supportedTypes": ["Crypto"]
   },
   {
     "name": "Interactive Brokers",
-    "supported_types": ["Stock"]
+    "supportedTypes": ["Stock"]
   },
   {
     "name": "Inter",
-    "supported_types": ["FixedIncome"]
+    "supportedTypes": ["FixedIncome"]
   },
   {
     "name": "NuInvest",
-    "supported_types": ["FixedIncome"]
+    "supportedTypes": ["FixedIncome"]
   }
 ]

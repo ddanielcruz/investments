@@ -8,11 +8,11 @@ const prisma = new PrismaClient()
 
 async function seedBrokers() {
   console.log(`Seeding ${brokers.length} brokers`)
-  for (const { name, supported_types } of brokers) {
+  for (const { name, supportedTypes } of brokers) {
     await prisma.broker.upsert({
       where: { name },
-      update: { supported_types: supported_types as AssetType[] },
-      create: { name, supported_types: supported_types as AssetType[] }
+      update: { supportedTypes: supportedTypes as AssetType[] },
+      create: { name, supportedTypes: supportedTypes as AssetType[] }
     })
   }
 }

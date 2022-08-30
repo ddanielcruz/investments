@@ -8,6 +8,7 @@ datasource db {
 }
 
 model Asset {
+  @@map("assets")
   id Int @default(autoincrement()) @id
   name String
   ticker String @unique
@@ -17,31 +18,34 @@ model Asset {
 }
 
 model AssetSymbol {
+  @@map("assets_symbols")
   id Int @default(autoincrement()) @id
-  asset_id Int
+  assetId Int @map("asset_id")
   symbol String
   provider AssetProvider
-  asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model Broker {
+  @@map("brokers")
   id Int @default(autoincrement()) @id
   name String @unique
-  supported_types AssetType[]
+  supportedTypes AssetType[]
   transactions Transaction[]
 }
 
 model Transaction {
+  @@map("transactions")
   id Int @default(autoincrement()) @id
-  asset_id Int
-  broker_id Int
-  unit_price Decimal
+  assetId Int @map("asset_id")
+  brokerId Int @map("broker_id")
+  unitPrice Decimal @map("unit_price")
   quantity Decimal
   fee Decimal
   date DateTime
   type TransactionType
-  asset Asset @relation(fields: [asset_id], references: [id], onDelete: Restrict)
-  broker Broker @relation(fields: [broker_id], references: [id], onDelete: Restrict)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Restrict)
+  broker Broker @relation(fields: [brokerId], references: [id], onDelete: Restrict)
 }
 
 enum AssetType {

@@ -8,36 +8,36 @@ CREATE TYPE "AssetProvider" AS ENUM ('CoinMarketcap', 'AlphaVantage');
 CREATE TYPE "TransactionType" AS ENUM ('Buy', 'Sell');
 
 -- CreateTable
-CREATE TABLE "Asset" (
+CREATE TABLE "assets" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "ticker" TEXT NOT NULL,
     "type" "AssetType" NOT NULL,
 
-    CONSTRAINT "Asset_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "assets_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "AssetSymbol" (
+CREATE TABLE "assets_symbols" (
     "id" SERIAL NOT NULL,
     "asset_id" INTEGER NOT NULL,
     "symbol" TEXT NOT NULL,
     "provider" "AssetProvider" NOT NULL,
 
-    CONSTRAINT "AssetSymbol_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "assets_symbols_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Broker" (
+CREATE TABLE "brokers" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "supported_types" "AssetType"[],
+    "supportedTypes" "AssetType"[],
 
-    CONSTRAINT "Broker_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "brokers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Transaction" (
+CREATE TABLE "transactions" (
     "id" SERIAL NOT NULL,
     "asset_id" INTEGER NOT NULL,
     "broker_id" INTEGER NOT NULL,
@@ -47,20 +47,20 @@ CREATE TABLE "Transaction" (
     "date" TIMESTAMP(3) NOT NULL,
     "type" "TransactionType" NOT NULL,
 
-    CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Asset_ticker_key" ON "Asset"("ticker");
+CREATE UNIQUE INDEX "assets_ticker_key" ON "assets"("ticker");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Broker_name_key" ON "Broker"("name");
+CREATE UNIQUE INDEX "brokers_name_key" ON "brokers"("name");
 
 -- AddForeignKey
-ALTER TABLE "AssetSymbol" ADD CONSTRAINT "AssetSymbol_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "Asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "assets_symbols" ADD CONSTRAINT "assets_symbols_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "assets"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "Asset"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "assets"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_broker_id_fkey" FOREIGN KEY ("broker_id") REFERENCES "Broker"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_broker_id_fkey" FOREIGN KEY ("broker_id") REFERENCES "brokers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
