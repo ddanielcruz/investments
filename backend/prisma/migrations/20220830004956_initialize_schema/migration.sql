@@ -50,6 +50,12 @@ CREATE TABLE "Transaction" (
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Asset_ticker_key" ON "Asset"("ticker");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Broker_name_key" ON "Broker"("name");
+
 -- AddForeignKey
 ALTER TABLE "AssetSymbol" ADD CONSTRAINT "AssetSymbol_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "Asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 

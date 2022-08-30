@@ -6,6 +6,8 @@
   },
   "author": "Daniel Cruz <danielcunha54@gmail.com>",
   "scripts": {
+    "db:migrate": "npx prisma migrate dev",
+    "db:seed": "npx prisma db seed",
     "dev:server": "tsnd --transpile-only --ignore-watch node_modules src/server.ts",
     "test": "jest --passWithNoTests --noStackTrace",
     "test:watch": "npm run test -- --watch",
@@ -16,6 +18,9 @@
     "url": "git+https://github.com/ddanielcruz/investments.git"
   },
   "license": "UNLICENSED",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^4.2.1"
   },
