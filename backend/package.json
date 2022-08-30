@@ -22,7 +22,8 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^4.2.1"
+    "@prisma/client": "^4.2.1",
+    "dotenv": "^16.0.2"
   },
   "devDependencies": {
     "@types/jest": "^28.1.8",
