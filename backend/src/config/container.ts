@@ -3,6 +3,7 @@ import { buildProviderModule } from 'inversify-binding-decorators'
 
 import { PrismaClient } from '@prisma/client'
 
+// TODO: Automatically import dependencies, perhaps using a custom decorator
 import '../database/repositories'
 import '../core/services/assets/search-assets'
 import { client } from '../database/connection'

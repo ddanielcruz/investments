@@ -9,7 +9,13 @@ export default {
   clearMocks: true,
   coverageProvider: 'v8',
   coverageDirectory: 'coverage',
-  collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts', '!src/**/connection.ts'],
+  collectCoverageFrom: [
+    'src/core/**/*.ts',
+    'src/api/routes/*.ts',
+    'src/database/repositories/*.ts',
+    '!src/**/index.ts'
+  ],
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
-  modulePathIgnorePatterns: ['<rootDir>/tests/', '<rootDir>/database/repositories/index.ts']
+  modulePathIgnorePatterns: ['<rootDir>/tests/', '<rootDir>/database/repositories/index.ts'],
+  setupFiles: ['<rootDir>/tests/setup.ts']
 } as Config

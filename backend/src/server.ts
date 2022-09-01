@@ -1,7 +1,13 @@
+import 'dotenv/config'
 import 'reflect-metadata'
 
-import { container } from './config/container'
-import { IBrokersRepository } from './database/repositories'
+import { api } from './api'
 
-const repository = container.get(IBrokersRepository)
-repository.findAll().then(console.log)
+function bootstrap() {
+  const { PORT = '3333' } = process.env
+  api.listen(PORT, () => console.log(`Service is running on port ${PORT}`))
+}
+
+process.on('SIGTERM', () => process.exit())
+
+bootstrap()
