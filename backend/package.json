@@ -23,7 +23,10 @@
   },
   "dependencies": {
     "@prisma/client": "^4.2.1",
-    "dotenv": "^16.0.2"
+    "dotenv": "^16.0.2",
+    "inversify": "^6.0.1",
+    "inversify-binding-decorators": "^4.0.0",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/jest": "^28.1.8",

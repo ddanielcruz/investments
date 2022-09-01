@@ -3,6 +3,7 @@
     "target": "ES2018",
     "module": "commonjs",
     "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -10,6 +11,8 @@
     "strictPropertyInitialization": false,
     "removeComments": true,
     "outDir": "dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "typeRoots": [
       "node_modules/@types",
       "src/@types"

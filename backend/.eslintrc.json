@@ -49,6 +49,7 @@
 			}
 		],
 		"camelcase": "off",
-		"no-useless-constructor": "off"
+		"no-useless-constructor": "off",
+		"no-unused-vars": "off"
 	}
 }
