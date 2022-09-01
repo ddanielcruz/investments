@@ -6,8 +6,8 @@ export interface IBroker {
   supportedTypes: AssetType[]
 }
 
-export interface IBrokersRepository {
-  findAll(): Promise<IBroker[]>
+export abstract class IBrokersRepository {
+  abstract findAll(): Promise<IBroker[]>
 }
 
 export class BrokersRepository implements IBrokersRepository {

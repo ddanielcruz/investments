@@ -1,3 +1,4 @@
+import { IBroker, IBrokersRepository } from '../../src/database/repositories'
 import {
   IAsset,
   IAssetsRepository,
@@ -16,4 +17,13 @@ export const makeAssetsRepository = (): IAssetsRepository => {
     }
   }
   return new AssetsRepositoryStub()
+}
+
+export const makeBrokersRepository = (): IBrokersRepository => {
+  class BrokersRepositoryStub implements IBrokersRepository {
+    async findAll(): Promise<IBroker[]> {
+      return []
+    }
+  }
+  return new BrokersRepositoryStub()
 }

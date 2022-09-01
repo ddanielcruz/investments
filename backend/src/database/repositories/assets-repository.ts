@@ -16,9 +16,9 @@ export interface IAssetWithSymbols {
   symbols: IAssetSymbol[]
 }
 
-export interface IAssetsRepository {
-  findById(id: number): Promise<IAssetWithSymbols | null>
-  findMany(query: string): Promise<IAsset[]>
+export abstract class IAssetsRepository {
+  abstract findById(id: number): Promise<IAssetWithSymbols | null>
+  abstract findMany(query: string): Promise<IAsset[]>
 }
 
 export class AssetsRepository implements IAssetsRepository {
