@@ -1,9 +1,5 @@
-import { IBroker, IBrokersRepository } from '../../src/database/repositories'
-import {
-  IAsset,
-  IAssetsRepository,
-  IAssetWithSymbols
-} from '../../src/database/repositories/assets-repository'
+import { IAssetWithSymbols, IAsset, IBroker } from '../../src/database/models'
+import { IAssetsRepository, IBrokersRepository } from '../../src/database/repositories'
 import { makeAsset, makeAssetSymbol } from '../factories'
 
 export const makeAssetsRepository = (): IAssetsRepository => {

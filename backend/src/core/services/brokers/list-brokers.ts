@@ -1,7 +1,8 @@
 import { injectable } from 'inversify'
 import { provide } from 'inversify-binding-decorators'
 
-import { IBroker, IBrokersRepository } from '../../../database/repositories'
+import { IBroker } from '../../../database/models'
+import { IBrokersRepository } from '../../../database/repositories'
 
 @injectable()
 export abstract class IListBrokers {

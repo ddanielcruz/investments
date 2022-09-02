@@ -1,7 +1,8 @@
 import { injectable } from 'inversify'
 import { provide } from 'inversify-binding-decorators'
 
-import { IAsset, IAssetsRepository } from '../../../database/repositories/assets-repository'
+import { IAsset } from '../../../database/models'
+import { IAssetsRepository } from '../../../database/repositories'
 
 @injectable()
 export abstract class ISearchAssets {

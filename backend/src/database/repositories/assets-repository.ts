@@ -1,23 +1,9 @@
 import { injectable } from 'inversify'
 import { provide } from 'inversify-binding-decorators'
 
-import { AssetProvider, AssetType, PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
-export interface IAsset {
-  id: number
-  name: string
-  ticker: string
-  type: AssetType
-}
-
-export interface IAssetSymbol {
-  symbol: string
-  provider: AssetProvider
-}
-
-export interface IAssetWithSymbols {
-  symbols: IAssetSymbol[]
-}
+import { IAssetWithSymbols, IAsset } from '../models'
 
 @injectable()
 export abstract class IAssetsRepository {

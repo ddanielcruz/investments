@@ -3,17 +3,17 @@ import { makeBrokersRepository } from '../../../../tests/mocks/repositories'
 import { ListBrokers } from './list-brokers'
 
 const makeSut = () => {
-  const brokersRepositoryStubb = makeBrokersRepository()
-  const sut = new ListBrokers(brokersRepositoryStubb)
+  const brokersRepositoryStub = makeBrokersRepository()
+  const sut = new ListBrokers(brokersRepositoryStub)
 
-  return { sut, brokersRepositoryStubb }
+  return { sut, brokersRepositoryStub }
 }
 
 describe('ListBrokers', () => {
   it('lists all brokers using BrokersRepository', async () => {
-    const { sut, brokersRepositoryStubb } = makeSut()
+    const { sut, brokersRepositoryStub } = makeSut()
     const brokers = [makeBroker(), makeBroker()]
-    const findAllSpy = jest.spyOn(brokersRepositoryStubb, 'findAll').mockResolvedValueOnce(brokers)
+    const findAllSpy = jest.spyOn(brokersRepositoryStub, 'findAll').mockResolvedValueOnce(brokers)
     const foundBrokers = await sut.execute()
     expect(foundBrokers).toEqual(brokers)
     expect(findAllSpy).toHaveBeenCalledWith()
