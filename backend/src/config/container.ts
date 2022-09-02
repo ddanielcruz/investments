@@ -7,6 +7,7 @@ import { PrismaClient } from '@prisma/client'
 import '../database/repositories'
 import '../core/services/assets/search-assets'
 import '../core/services/brokers/list-brokers'
+import '../core/services/transactions/create-transaction'
 import { client } from '../database/connection'
 
 export const container = new Container()

@@ -12,6 +12,6 @@ export interface IAssetSymbol {
   provider: AssetProvider
 }
 
-export interface IAssetWithSymbols {
+export interface IAssetWithSymbols extends IAsset {
   symbols: IAssetSymbol[]
 }
