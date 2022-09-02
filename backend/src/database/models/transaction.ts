@@ -1,5 +1,8 @@
 import { TransactionType } from '@prisma/client'
 
+import { IAsset } from './asset'
+import { IBroker } from './broker'
+
 export interface ITransactionAttr {
   assetId: number
   brokerId: number
@@ -12,4 +15,9 @@ export interface ITransactionAttr {
 
 export interface ITransaction extends ITransactionAttr {
   id: number
+}
+
+export interface ITransactionWithEntities extends ITransaction {
+  asset: IAsset
+  broker: IBroker
 }

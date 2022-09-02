@@ -1,4 +1,13 @@
-import { Asset, AssetProvider, AssetSymbol, AssetType, Broker } from '@prisma/client'
+import {
+  Asset,
+  AssetProvider,
+  AssetSymbol,
+  AssetType,
+  Broker,
+  Prisma,
+  Transaction,
+  TransactionType
+} from '@prisma/client'
 
 const makeId = () => Math.floor(Math.random() * 1e9)
 
@@ -30,6 +39,25 @@ export const makeAssetSymbol = (other?: Partial<AssetSymbol>): AssetSymbol => {
     assetId: id,
     provider: AssetProvider.AlphaVantage,
     symbol: `symbol-${id}`,
+    ...other
+  }
+}
+
+export const makeTransaction = (
+  assetId: number,
+  brokerId: number,
+  other?: Partial<Transaction>
+): Transaction => {
+  const id = makeId()
+  return {
+    id,
+    assetId,
+    brokerId,
+    unitPrice: new Prisma.Decimal(10),
+    quantity: new Prisma.Decimal(1),
+    fee: new Prisma.Decimal(0),
+    type: TransactionType.Buy,
+    date: new Date(),
     ...other
   }
 }
