@@ -10,9 +10,9 @@ export abstract class ISearchAssets {
 
 @provide(ISearchAssets)
 export class SearchAssets implements ISearchAssets {
-  constructor(private readonly assetsRepo: IAssetsRepository) {}
+  constructor(private readonly assetsRepository: IAssetsRepository) {}
 
-  async execute(query: string): Promise<IAsset[]> {
-    return this.assetsRepo.findMany(query)
+  execute(query: string): Promise<IAsset[]> {
+    return this.assetsRepository.findMany(query)
   }
 }
