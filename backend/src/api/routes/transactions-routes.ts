@@ -1,8 +1,8 @@
 import { Router } from 'express'
 
 import { container } from '../../config/container'
-import { ICreateTransaction } from '../../core/services/transactions/create-transaction'
 import { IListTransactions } from '../../core/services/transactions/list-transactions'
+import { IStoreTransaction } from '../../core/services/transactions/store-transaction'
 
 export const routes = Router()
 
@@ -14,7 +14,7 @@ routes.get('/', async (_request, response) => {
 })
 
 routes.post('/', async (request, response) => {
-  const service = container.get(ICreateTransaction)
+  const service = container.get(IStoreTransaction)
   const transaction = await service.execute(request.body)
 
   return response.status(201).json(transaction)

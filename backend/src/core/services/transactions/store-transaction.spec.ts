@@ -1,20 +1,20 @@
-import { AssetType, TransactionType } from '@prisma/client'
+import { TransactionType } from '@prisma/client'
 
-import { makeAsset, makeBroker } from '../../../../tests/factories'
+import { makeBroker } from '../../../../tests/factories'
 import {
   makeAssetsRepository,
   makeBrokersRepository,
   makeTransactionsRepository
 } from '../../../../tests/mocks/repositories'
 import { ITransactionAttr } from '../../../database/models'
-import { ValidationError } from '../../errors'
-import { CreateTransaction } from './create-transaction'
+import { NotFoundError, ValidationError } from '../../errors'
+import { StoreTransaction } from './store-transaction'
 
 const makeSut = () => {
   const assetsRepoStub = makeAssetsRepository()
   const brokersRepoStub = makeBrokersRepository()
   const txRepoStub = makeTransactionsRepository()
-  const sut = new CreateTransaction(assetsRepoStub, brokersRepoStub, txRepoStub)
+  const sut = new StoreTransaction(assetsRepoStub, brokersRepoStub, txRepoStub)
   const data: ITransactionAttr = {
     assetId: 1,
     brokerId: 1,
@@ -28,7 +28,7 @@ const makeSut = () => {
   return { assetsRepoStub, brokersRepoStub, txRepoStub, sut, data }
 }
 
-describe('CreateTransaction', () => {
+describe('StoreTransaction', () => {
   it.each([
     { assetId: undefined },
     { brokerId: undefined },
@@ -75,5 +75,19 @@ describe('CreateTransaction', () => {
     const createdTx = await sut.execute(data)
     expect(createdTx).toBeTruthy()
     expect(createSpy).toHaveBeenCalledWith(data)
+  })
+
+  it('updates transaction if informed an ID', async () => {
+    const { sut, data, txRepoStub } = makeSut()
+    const updateSpy = jest.spyOn(txRepoStub, 'update')
+    await sut.execute(data, 1)
+    expect(updateSpy).toHaveBeenCalledWith(1, data)
+  })
+
+  it('throws if transaction is not found to update', async () => {
+    const { sut, data, txRepoStub } = makeSut()
+    jest.spyOn(txRepoStub, 'update').mockResolvedValueOnce(null)
+    const promise = sut.execute(data, 1)
+    await expect(promise).rejects.toThrow(NotFoundError)
   })
 })

@@ -16,7 +16,7 @@ import {
   IBrokersRepository,
   ITransactionsRepository
 } from '../../../database/repositories'
-import { FieldError, ValidationError } from '../../errors'
+import { FieldError, NotFoundError, ValidationError } from '../../errors'
 
 const validator = Joi.object<ITransactionAttr>().keys({
   assetId: Joi.number().required(),
@@ -32,21 +32,29 @@ const validator = Joi.object<ITransactionAttr>().keys({
 })
 
 @injectable()
-export abstract class ICreateTransaction {
-  abstract execute(data: ITransactionAttr): Promise<ITransaction>
+export abstract class IStoreTransaction {
+  abstract execute(data: ITransactionAttr, id?: number): Promise<ITransaction>
 }
 
-@provide(ICreateTransaction)
-export class CreateTransaction implements ICreateTransaction {
+@provide(IStoreTransaction)
+export class StoreTransaction implements IStoreTransaction {
   constructor(
     private readonly assetsRepository: IAssetsRepository,
     private readonly brokersRepository: IBrokersRepository,
     private readonly transactionsRepository: ITransactionsRepository
   ) {}
 
-  async execute(data: ITransactionAttr): Promise<ITransaction> {
+  async execute(data: ITransactionAttr, id?: number): Promise<ITransaction> {
     const normalizedData = await this.validate(data)
-    return await this.transactionsRepository.create(normalizedData)
+    const transaction = id
+      ? await this.transactionsRepository.update(id, normalizedData)
+      : await this.transactionsRepository.create(normalizedData)
+
+    if (!transaction) {
+      throw new NotFoundError('Transaction not found.')
+    }
+
+    return transaction
   }
 
   private async validate(data: ITransactionAttr): Promise<ITransactionAttr> {
