@@ -4,6 +4,7 @@ import { PrismaClient, TransactionType } from '@prisma/client'
 
 import { makeAsset, makeBroker, makeTransaction } from '../../../tests/factories'
 import prisma from '../../../tests/prisma'
+import { IAsset, IBroker } from '../../database/models'
 import { api } from '../index'
 
 let client: PrismaClient
@@ -13,26 +14,34 @@ const makeSut = () => {
 }
 
 describe('/transactions', () => {
+  let asset: IAsset
+  let broker: IBroker
+
   beforeAll(async () => {
     client = await prisma.connect()
+    asset = await client.asset.create({ data: makeAsset() })
+    broker = await client.broker.create({ data: makeBroker() })
   })
 
-  beforeEach(async () => {
-    await client.$transaction([
-      client.transaction.deleteMany(),
-      client.broker.deleteMany(),
-      client.asset.deleteMany()
-    ])
+  afterEach(async () => {
+    await client.transaction.deleteMany()
   })
 
   afterAll(async () => {
+    await client.$transaction([client.broker.deleteMany(), client.asset.deleteMany()])
     await prisma.disconnect()
+  })
+
+  describe('GET /', () => {
+    it('lists all transactions', async () => {
+      await client.transaction.create({ data: makeTransaction(asset.id, broker.id) })
+      const { body } = await makeSut().get('/transactions').expect(200)
+      expect(body).toHaveLength(1)
+    })
   })
 
   describe('POST /', () => {
     it('creates a new transaction', async () => {
-      const asset = await client.asset.create({ data: makeAsset() })
-      const broker = await client.broker.create({ data: makeBroker() })
       const date = new Date()
       const { body } = await makeSut()
         .post('/transactions')

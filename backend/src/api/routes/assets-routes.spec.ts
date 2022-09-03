@@ -17,7 +17,7 @@ describe('/assets', () => {
     client = await prisma.connect()
   })
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await client.asset.deleteMany()
   })
 
