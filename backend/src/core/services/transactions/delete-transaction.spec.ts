@@ -22,4 +22,6 @@ describe('DeleteTransaction', () => {
     const promise = sut.execute(1)
     await expect(promise).rejects.toThrow(NotFoundError)
   })
+
+  it.todo('triggers a job to update the portfolio')
 })

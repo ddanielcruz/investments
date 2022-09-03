@@ -90,4 +90,6 @@ describe('StoreTransaction', () => {
     const promise = sut.execute(data, 1)
     await expect(promise).rejects.toThrow(NotFoundError)
   })
+
+  it.todo('triggers a job to update the portfolio')
 })
