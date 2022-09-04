@@ -1,17 +1,20 @@
 import { readdir } from 'fs/promises'
 import { Container } from 'inversify'
 import { buildProviderModule } from 'inversify-binding-decorators'
+import Redis from 'ioredis'
 import { resolve } from 'path'
 
 import { PrismaClient } from '@prisma/client'
 
+import * as cache from '../cache/connection'
 import { client } from '../database/connection'
 
 export const container = new Container()
 
 async function importModules() {
-  // Import all repositories from indexes file
+  // Import data sources' repositories
   await import('../database/repositories')
+  await import('../cache/cache-repository')
 
   // Import all services from subfolders
   const basePath = resolve(__dirname, '..', 'core', 'services')
@@ -33,6 +36,10 @@ async function setup() {
   await importModules()
   container.load(buildProviderModule())
   container.bind(PrismaClient).toConstantValue(client)
+  container
+    .bind(Redis)
+    .toDynamicValue(() => cache.connect())
+    .inSingletonScope()
 }
 
 setup()

@@ -30,6 +30,7 @@
     "helmet": "^6.0.0",
     "inversify": "^6.0.1",
     "inversify-binding-decorators": "^4.0.0",
+    "ioredis": "^5.2.3",
     "joi": "^17.6.0",
     "morgan": "^1.10.0",
     "reflect-metadata": "^0.1.13",

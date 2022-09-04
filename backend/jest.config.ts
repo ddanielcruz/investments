@@ -13,6 +13,7 @@ export default {
     'src/core/**/*.ts',
     'src/api/routes/*.ts',
     'src/database/repositories/*.ts',
+    'src/cache/*-repository.ts',
     '!src/**/index.ts'
   ],
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
