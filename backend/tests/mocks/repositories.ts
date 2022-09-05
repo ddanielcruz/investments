@@ -1,3 +1,4 @@
+import { ICacheRepository } from '../../src/cache/cache-repository'
 import {
   IAssetWithSymbols,
   IAsset,
@@ -74,4 +75,17 @@ export const makeTransactionsRepository = (): ITransactionsRepository => {
     }
   }
   return new TransactionsRepositoryStub()
+}
+
+export const makeCacheRepository = (): ICacheRepository => {
+  class CacheRepositoryStub implements ICacheRepository {
+    async write() {}
+
+    async read() {
+      return null
+    }
+
+    async invalidate(): Promise<void> {}
+  }
+  return new CacheRepositoryStub()
 }

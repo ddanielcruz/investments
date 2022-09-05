@@ -11,6 +11,7 @@ import {
 
 const makeId = () => Math.floor(Math.random() * 1e9)
 
+// TODO: Refactor all models to return the interfaces
 export const makeBroker = (other?: Partial<Broker>): Broker => {
   const id = makeId()
   return {
