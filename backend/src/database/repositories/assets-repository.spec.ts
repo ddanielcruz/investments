@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, TransactionType } from '@prisma/client'
 
-import { makeAsset } from '../../../tests/factories'
+import { makeAsset, makeBroker, makeTransaction } from '../../../tests/factories'
 import prisma from '../../../tests/prisma'
 import { AssetsRepository } from './assets-repository'
 
@@ -15,8 +15,8 @@ describe('Assets', () => {
     client = await prisma.connect()
   })
 
-  beforeEach(async () => {
-    await client.asset.deleteMany()
+  afterEach(async () => {
+    await client.$transaction([client.transaction.deleteMany(), client.asset.deleteMany()])
   })
 
   afterAll(async () => {
@@ -33,6 +33,30 @@ describe('Assets', () => {
     it('returns null when not found', async () => {
       const foundAsset = await makeSut().findById(0)
       expect(foundAsset).toBeFalsy()
+    })
+  })
+
+  describe('findInvested', () => {
+    it('finds all invested assets', async () => {
+      const [assetA, assetB, assetC] = await Promise.all([
+        client.asset.create({ data: makeAsset() }),
+        client.asset.create({ data: makeAsset() }),
+        client.asset.create({ data: makeAsset() })
+      ])
+      const broker = await client.broker.create({ data: makeBroker() })
+      await client.transaction.createMany({
+        data: [
+          makeTransaction(assetA.id, broker.id),
+          makeTransaction(assetA.id, broker.id),
+          makeTransaction(assetB.id, broker.id, { type: TransactionType.Sell }),
+          makeTransaction(assetC.id, broker.id),
+          makeTransaction(assetA.id, broker.id),
+          makeTransaction(assetC.id, broker.id)
+        ]
+      })
+      const assetsIds = (await makeSut().findInvested()).map(asset => asset.id).sort()
+      expect(assetsIds).toHaveLength(3)
+      expect(assetsIds).toEqual([assetA.id, assetB.id, assetC.id].sort())
     })
   })
 

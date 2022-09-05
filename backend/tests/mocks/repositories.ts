@@ -15,6 +15,10 @@ import { makeAsset, makeAssetSymbol, makeBroker, makeTransaction } from '../fact
 
 export const makeAssetsRepository = (): IAssetsRepository => {
   class AssetsRepositoryStub implements IAssetsRepository {
+    async findInvested(): Promise<IAssetWithSymbols[]> {
+      return []
+    }
+
     async findById(): Promise<IAssetWithSymbols | null> {
       return { ...makeAsset(), symbols: [makeAssetSymbol()] }
     }

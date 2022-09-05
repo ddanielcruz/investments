@@ -8,6 +8,7 @@ import { IAssetWithSymbols, IAsset } from '../models'
 @injectable()
 export abstract class IAssetsRepository {
   abstract findById(id: number): Promise<IAssetWithSymbols | null>
+  abstract findInvested(): Promise<IAssetWithSymbols[]>
   abstract findMany(query: string): Promise<IAsset[]>
 }
 
@@ -17,6 +18,15 @@ export class AssetsRepository implements IAssetsRepository {
 
   findById(id: number): Promise<IAssetWithSymbols | null> {
     return this.client.asset.findUnique({ where: { id }, include: { symbols: true } })
+  }
+
+  async findInvested(): Promise<IAssetWithSymbols[]> {
+    return (
+      await this.client.transaction.findMany({
+        select: { asset: { include: { symbols: true } } },
+        distinct: 'assetId'
+      })
+    ).map(({ asset }) => asset)
   }
 
   findMany(query: string): Promise<IAsset[]> {
