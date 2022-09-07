@@ -39,9 +39,9 @@ model Transaction {
   id Int @default(autoincrement()) @id
   assetId Int @map("asset_id")
   brokerId Int @map("broker_id")
-  unitPrice Decimal @map("unit_price")
-  quantity Decimal
-  fee Decimal
+  unitPrice Float @map("unit_price")
+  quantity Float
+  fee Float
   date DateTime
   type TransactionType
   asset Asset @relation(fields: [assetId], references: [id], onDelete: Restrict)

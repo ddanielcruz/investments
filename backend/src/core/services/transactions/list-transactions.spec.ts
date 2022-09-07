@@ -14,14 +14,7 @@ const makeTxWithEntities = (): ITransactionWithEntities => {
   const broker = makeBroker()
   const tx = makeTransaction(asset.id, broker.id)
 
-  return {
-    ...tx,
-    asset,
-    broker,
-    unitPrice: tx.unitPrice.toNumber(),
-    quantity: tx.quantity.toNumber(),
-    fee: tx.fee.toNumber()
-  }
+  return { ...tx, asset, broker }
 }
 
 describe('ListTransactions', () => {

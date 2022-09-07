@@ -4,14 +4,12 @@ import {
   AssetSymbol,
   AssetType,
   Broker,
-  Prisma,
   Transaction,
   TransactionType
 } from '@prisma/client'
 
 const makeId = () => Math.floor(Math.random() * 1e9)
 
-// TODO: Refactor all models to return the interfaces
 export const makeBroker = (other?: Partial<Broker>): Broker => {
   const id = makeId()
   return {
@@ -54,9 +52,9 @@ export const makeTransaction = (
     id,
     assetId,
     brokerId,
-    unitPrice: new Prisma.Decimal(10),
-    quantity: new Prisma.Decimal(1),
-    fee: new Prisma.Decimal(0),
+    unitPrice: 10,
+    quantity: 1,
+    fee: 0,
     type: TransactionType.Buy,
     date: new Date(),
     ...other

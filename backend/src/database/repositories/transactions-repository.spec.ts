@@ -50,12 +50,7 @@ describe('TransactionsRepository', () => {
       const createdTx = await makeSut().create(data)
       const foundTxs = await client.transaction.findMany()
       expect(foundTxs).toHaveLength(1)
-      expect(createdTx).toEqual({
-        ...foundTxs[0],
-        unitPrice: foundTxs[0].unitPrice.toNumber(),
-        quantity: foundTxs[0].quantity.toNumber(),
-        fee: foundTxs[0].fee.toNumber()
-      })
+      expect(createdTx).toEqual(foundTxs[0])
     })
   })
 
@@ -88,18 +83,12 @@ describe('TransactionsRepository', () => {
       expect(foundTxs[0]).toEqual({
         ...txB,
         asset: assetB,
-        broker: brokerB,
-        unitPrice: txB.unitPrice.toNumber(),
-        quantity: txB.quantity.toNumber(),
-        fee: txB.fee.toNumber()
+        broker: brokerB
       })
       expect(foundTxs[1]).toEqual({
         ...txA,
         asset: assetA,
-        broker: brokerA,
-        unitPrice: txA.unitPrice.toNumber(),
-        quantity: txA.quantity.toNumber(),
-        fee: txA.fee.toNumber()
+        broker: brokerA
       })
     })
   })
@@ -127,9 +116,9 @@ describe('TransactionsRepository', () => {
       expect(foundTxs).toHaveLength(1)
       expect(foundTxs[0]).toMatchObject({
         ...data,
-        unitPrice: new Prisma.Decimal(20),
-        quantity: new Prisma.Decimal(1),
-        fee: new Prisma.Decimal(0)
+        unitPrice: 20,
+        quantity: 1,
+        fee: 0
       })
     })
 

@@ -41,9 +41,9 @@ CREATE TABLE "transactions" (
     "id" SERIAL NOT NULL,
     "asset_id" INTEGER NOT NULL,
     "broker_id" INTEGER NOT NULL,
-    "unit_price" DECIMAL(65,30) NOT NULL,
-    "quantity" DECIMAL(65,30) NOT NULL,
-    "fee" DECIMAL(65,30) NOT NULL,
+    "unit_price" DOUBLE PRECISION NOT NULL,
+    "quantity" DOUBLE PRECISION NOT NULL,
+    "fee" DOUBLE PRECISION NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "type" "TransactionType" NOT NULL,
 

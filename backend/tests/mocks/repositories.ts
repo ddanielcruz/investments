@@ -45,21 +45,13 @@ export const makeBrokersRepository = (): IBrokersRepository => {
 }
 
 export const makeTransactionsRepository = (): ITransactionsRepository => {
-  const tx = makeTransaction(1, 1)
-  const normTx: ITransaction = {
-    ...tx,
-    unitPrice: tx.unitPrice.toNumber(),
-    quantity: tx.quantity.toNumber(),
-    fee: tx.fee.toNumber()
-  }
-
   class TransactionsRepositoryStub implements ITransactionsRepository {
     async create(data: ITransactionAttr): Promise<ITransaction> {
-      return { ...normTx, ...data }
+      return { ...makeTransaction(1, 1), ...data }
     }
 
     async delete(id: number): Promise<ITransaction | null> {
-      return { ...normTx, id }
+      return { ...makeTransaction(1, 1), id }
     }
 
     async findAll(): Promise<ITransactionWithEntities[]> {
@@ -67,11 +59,7 @@ export const makeTransactionsRepository = (): ITransactionsRepository => {
     }
 
     async update(id: number, data: ITransactionAttr): Promise<ITransaction | null> {
-      return {
-        ...normTx,
-        ...data,
-        id
-      }
+      return { ...makeTransaction(1, 1), ...data, id }
     }
   }
   return new TransactionsRepositoryStub()
