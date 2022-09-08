@@ -8,7 +8,9 @@
   "scripts": {
     "db:migrate": "npx prisma migrate dev",
     "db:seed": "npx prisma db seed",
+    "dev": "concurrently npm:dev:server npm:dev:worker -c \"blue.bold,green.bold\"",
     "dev:server": "tsnd --transpile-only --ignore-watch node_modules src/server.ts",
+    "dev:worker": "tsnd --transpile-only --ignore-watch node_modules src/queue/worker.ts",
     "test": "jest --passWithNoTests --noStackTrace",
     "test:watch": "npm run test -- --watch",
     "test:ci": "npm run test -- --coverage"
@@ -24,6 +26,7 @@
   "dependencies": {
     "@prisma/client": "^4.2.1",
     "axios": "^0.27.2",
+    "bullmq": "^1.90.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
@@ -47,6 +50,7 @@
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.35.1",
     "@typescript-eslint/parser": "^5.35.1",
+    "concurrently": "^7.4.0",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",

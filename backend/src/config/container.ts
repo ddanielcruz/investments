@@ -1,3 +1,4 @@
+import { Queue } from 'bullmq'
 import { readdir } from 'fs/promises'
 import { Container } from 'inversify'
 import { buildProviderModule } from 'inversify-binding-decorators'
@@ -6,8 +7,9 @@ import { resolve } from 'path'
 
 import { PrismaClient } from '@prisma/client'
 
-import * as cache from '../cache/connection'
 import { client } from '../database/connection'
+import * as queue from '../queue/connection'
+import * as redis from './redis'
 
 export const container = new Container()
 
@@ -38,7 +40,11 @@ async function setup() {
   container.bind(PrismaClient).toConstantValue(client)
   container
     .bind(Redis)
-    .toDynamicValue(() => cache.connect())
+    .toDynamicValue(() => redis.connect())
+    .inSingletonScope()
+  container
+    .bind(Queue)
+    .toDynamicValue(() => queue.connect())
     .inSingletonScope()
 }
 
