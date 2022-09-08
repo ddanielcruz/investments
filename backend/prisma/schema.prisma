@@ -15,6 +15,7 @@ model Asset {
   type AssetType
   transactions Transaction[]
   symbols AssetSymbol[]
+  metrics AssetMetrics?
 }
 
 model AssetSymbol {
@@ -47,6 +48,21 @@ model Transaction {
   asset Asset @relation(fields: [assetId], references: [id], onDelete: Restrict)
   broker Broker @relation(fields: [brokerId], references: [id], onDelete: Restrict)
 }
+
+model AssetMetrics {
+  @@map("assets_metrics")
+  id Int @default(autoincrement()) @id
+  assetId Int @map("asset_id") @unique
+  marketPrice Float @map("market_price")
+  quantity Float
+  totalInvested Float @map("total_invested")
+  totalEquity Float @map("total_equity")
+  return Float
+  returnPercentage Float @map("return_percentage")
+  averagePrice Float @map("average_price")
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+}
+
 
 enum AssetType {
   Stock
