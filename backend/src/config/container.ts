@@ -34,7 +34,7 @@ async function importModules() {
   await Promise.all(filePaths.map(filepath => import(filepath)))
 }
 
-async function setup() {
+export async function setup() {
   await importModules()
   container.load(buildProviderModule())
   container.bind(PrismaClient).toConstantValue(client)
@@ -47,5 +47,3 @@ async function setup() {
     .toDynamicValue(() => queue.connect())
     .inSingletonScope()
 }
-
-setup()

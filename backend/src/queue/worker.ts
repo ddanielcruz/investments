@@ -3,7 +3,7 @@ import 'dotenv/config'
 
 import { Job, Worker } from 'bullmq'
 
-import '../config/container'
+import { setup } from '../config/container'
 import { logger } from '../config/logger'
 import { config } from '../config/queue'
 import * as redis from '../config/redis'
@@ -22,4 +22,4 @@ async function handleJob(job: Job) {
 
 process.on('SIGTERM', () => process.exit())
 
-bootstrap()
+setup().then(bootstrap)

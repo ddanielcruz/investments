@@ -18,6 +18,6 @@ export default {
   ],
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
   modulePathIgnorePatterns: ['<rootDir>/tests/', '<rootDir>/database/repositories/index.ts'],
-  setupFiles: ['<rootDir>/tests/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   testTimeout: 60000
 } as Config
