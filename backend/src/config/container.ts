@@ -7,8 +7,8 @@ import { resolve } from 'path'
 
 import { PrismaClient } from '@prisma/client'
 
-import * as database from '../database/connection'
-import * as queue from '../queue/connection'
+import * as database from '../database'
+import * as queue from '../queue'
 import * as redis from './redis'
 
 export const container = new Container()
@@ -38,9 +38,6 @@ export async function setup() {
   await importModules()
   container.load(buildProviderModule())
   container.bind(PrismaClient).toDynamicValue(database.connect).inSingletonScope()
-  container
-    .bind(Redis)
-    .toDynamicValue(() => redis.connect())
-    .inSingletonScope()
+  container.bind(Redis).toDynamicValue(redis.connect).inSingletonScope()
   container.bind(Queue).toDynamicValue(queue.connect).inSingletonScope()
 }

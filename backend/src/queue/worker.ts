@@ -2,16 +2,16 @@ import 'reflect-metadata'
 import 'dotenv/config'
 
 import { Job, Worker } from 'bullmq'
+import Redis from 'ioredis'
 
-import { setup } from '../config/container'
+import { container, setup } from '../config/container'
 import { logger } from '../config/logger'
 import { config } from '../config/queue'
-import * as redis from '../config/redis'
 
 async function bootstrap() {
   logger.info(`Starting workers on ${config.name} queue`)
   return new Worker(config.name, handleJob, {
-    connection: redis.connect({ maxRetriesPerRequest: null }),
+    connection: container.get(Redis),
     concurrency: config.concurrency
   })
 }

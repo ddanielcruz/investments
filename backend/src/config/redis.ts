@@ -1,5 +1,5 @@
-import Redis, { RedisOptions } from 'ioredis'
+import Redis from 'ioredis'
 
-export function connect(options: RedisOptions = {}) {
-  return new Redis(process.env.REDIS_URL || '', options)
+export function connect() {
+  return new Redis(process.env.REDIS_URL || '', { maxRetriesPerRequest: null })
 }
