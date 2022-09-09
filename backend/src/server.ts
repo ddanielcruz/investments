@@ -17,6 +17,7 @@ async function bootstrap() {
   }
 
   // Setup infrastructure
+  logger.info('Setting up queue and repeatable jobs')
   await queue.setup()
 
   // Initialize the server
