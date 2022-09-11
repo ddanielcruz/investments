@@ -1,13 +1,18 @@
+import { Queue } from 'bullmq'
+import Redis from 'ioredis'
 import request from 'supertest'
 
 import { PrismaClient, TransactionType } from '@prisma/client'
 
 import { makeAsset, makeBroker, makeTransaction } from '../../../tests/factories'
 import prisma from '../../../tests/prisma'
+import { container } from '../../config/container'
 import { IAsset, IBroker, ITransactionAttr } from '../../database/models'
 import { api } from '../index'
 
 let client: PrismaClient
+let redis: Redis
+let queue: Queue
 
 const makeSut = () => {
   return request(api)
@@ -21,6 +26,8 @@ describe('/transactions', () => {
 
   beforeAll(async () => {
     client = await prisma.connect()
+    redis = container.get(Redis)
+    queue = container.get(Queue)
     asset = await client.asset.create({ data: makeAsset() })
     broker = await client.broker.create({ data: makeBroker() })
     storeData = {
@@ -36,11 +43,14 @@ describe('/transactions', () => {
 
   afterEach(async () => {
     await client.transaction.deleteMany()
+    await queue.drain(true)
   })
 
   afterAll(async () => {
     await client.$transaction([client.broker.deleteMany(), client.asset.deleteMany()])
     await prisma.disconnect()
+    await queue.close()
+    await queue.disconnect()
   })
 
   describe('GET /', () => {

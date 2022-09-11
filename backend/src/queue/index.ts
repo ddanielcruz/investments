@@ -10,8 +10,15 @@ const SECOND = 1000
 
 export function connect() {
   const connection = container.get(Redis)
-  new QueueScheduler(config.name, { connection })
-  return new Queue(config.name, { connection })
+  const scheduler = new QueueScheduler(config.name, { connection })
+  const queue = new Queue(config.name, { connection })
+
+  connection.on('close', async () => {
+    await scheduler.close()
+    await scheduler.disconnect()
+  })
+
+  return queue
 }
 
 export async function setup() {
