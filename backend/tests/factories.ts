@@ -1,5 +1,6 @@
 import {
   Asset,
+  AssetMetrics,
   AssetProvider,
   AssetSymbol,
   AssetType,
@@ -7,6 +8,8 @@ import {
   Transaction,
   TransactionType
 } from '@prisma/client'
+
+import { IAsset, IAssetMetricsAttr } from '../src/database/models'
 
 const makeId = () => Math.floor(Math.random() * 1e9)
 
@@ -57,6 +60,25 @@ export const makeTransaction = (
     fee: 0,
     type: TransactionType.Buy,
     date: new Date(),
+    ...other
+  }
+}
+
+export const makeAssetsMetrics = (
+  assetId: number,
+  other?: Partial<IAssetMetricsAttr>
+): AssetMetrics => {
+  const id = makeId()
+  return {
+    id,
+    assetId,
+    averagePrice: 0,
+    marketPrice: 0,
+    quantity: 0,
+    return: 0,
+    returnPercentage: 0,
+    totalEquity: 0,
+    totalInvested: 0,
     ...other
   }
 }
