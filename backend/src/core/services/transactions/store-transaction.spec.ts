@@ -4,9 +4,11 @@ import { makeBroker } from '../../../../tests/factories'
 import {
   makeAssetsRepository,
   makeBrokersRepository,
+  makeQueueRepository,
   makeTransactionsRepository
 } from '../../../../tests/mocks/repositories'
 import { ITransactionAttr } from '../../../database/models'
+import { PROCESS_PORTFOLIO_METRICS } from '../../../queue/jobs/process-portfolio-metrics'
 import { NotFoundError, ValidationError } from '../../errors'
 import { StoreTransaction } from './store-transaction'
 
@@ -14,7 +16,8 @@ const makeSut = () => {
   const assetsRepoStub = makeAssetsRepository()
   const brokersRepoStub = makeBrokersRepository()
   const txRepoStub = makeTransactionsRepository()
-  const sut = new StoreTransaction(assetsRepoStub, brokersRepoStub, txRepoStub)
+  const queueRepoStub = makeQueueRepository()
+  const sut = new StoreTransaction(assetsRepoStub, brokersRepoStub, txRepoStub, queueRepoStub)
   const data: ITransactionAttr = {
     assetId: 1,
     brokerId: 1,
@@ -25,7 +28,7 @@ const makeSut = () => {
     unitPrice: 10
   }
 
-  return { assetsRepoStub, brokersRepoStub, txRepoStub, sut, data }
+  return { assetsRepoStub, brokersRepoStub, txRepoStub, sut, data, queueRepoStub }
 }
 
 describe('StoreTransaction', () => {
@@ -91,5 +94,10 @@ describe('StoreTransaction', () => {
     await expect(promise).rejects.toThrow(NotFoundError)
   })
 
-  it.todo('triggers a job to update the portfolio')
+  it('triggers a job to update the portfolio', async () => {
+    const { sut, queueRepoStub, data } = makeSut()
+    const addSpy = jest.spyOn(queueRepoStub, 'add')
+    await sut.execute(data)
+    expect(addSpy).toHaveBeenCalledWith(PROCESS_PORTFOLIO_METRICS)
+  })
 })

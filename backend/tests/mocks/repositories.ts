@@ -12,6 +12,7 @@ import {
   IBrokersRepository,
   ITransactionsRepository
 } from '../../src/database/repositories'
+import { IQueueRepository } from '../../src/queue/queue-repository'
 import { makeAsset, makeAssetSymbol, makeBroker, makeTransaction } from '../factories'
 
 export const makeAssetsRepository = (): IAssetsRepository => {
@@ -76,4 +77,12 @@ export const makeCacheRepository = (): ICacheRepository => {
     async invalidate(): Promise<void> {}
   }
   return new CacheRepositoryStub()
+}
+
+export const makeQueueRepository = (): IQueueRepository => {
+  class QueueRepositoryStub implements IQueueRepository {
+    async add(): Promise<void> {}
+  }
+
+  return new QueueRepositoryStub()
 }

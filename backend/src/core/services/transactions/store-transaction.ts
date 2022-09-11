@@ -16,6 +16,8 @@ import {
   IBrokersRepository,
   ITransactionsRepository
 } from '../../../database/repositories'
+import { PROCESS_PORTFOLIO_METRICS } from '../../../queue/jobs/process-portfolio-metrics'
+import { IQueueRepository } from '../../../queue/queue-repository'
 import { FieldError, NotFoundError, ValidationError } from '../../errors'
 
 const validator = Joi.object<ITransactionAttr>().keys({
@@ -41,7 +43,8 @@ export class StoreTransaction implements IStoreTransaction {
   constructor(
     private readonly assetsRepository: IAssetsRepository,
     private readonly brokersRepository: IBrokersRepository,
-    private readonly transactionsRepository: ITransactionsRepository
+    private readonly transactionsRepository: ITransactionsRepository,
+    private readonly queueRepository: IQueueRepository
   ) {}
 
   async execute(data: ITransactionAttr, id?: number): Promise<ITransaction> {
@@ -54,6 +57,8 @@ export class StoreTransaction implements IStoreTransaction {
     if (!transaction) {
       throw new NotFoundError('Transaction not found.')
     }
+
+    await this.queueRepository.add(PROCESS_PORTFOLIO_METRICS)
 
     return transaction
   }
