@@ -64,7 +64,7 @@ export const makeOperation = (
   }
 }
 
-export const makeAssetsMetrics = (
+export const makeAssetMetrics = (
   assetId: number,
   other?: Partial<IAssetMetricsAttr>
 ): AssetMetrics => {

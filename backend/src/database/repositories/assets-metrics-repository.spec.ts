@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
-import { makeAsset, makeAssetsMetrics } from '../../../tests/factories'
+import { makeAsset, makeAssetMetrics } from '../../../tests/factories'
 import prisma from '../../../tests/prisma'
 import { AssetsMetricsRepository } from './assets-metrics-repository'
 
@@ -30,7 +30,7 @@ describe('AssetsMetricsRepository', () => {
         client.asset.create({ data: makeAsset() })
       ])
       await client.assetMetrics.createMany({
-        data: [makeAssetsMetrics(assets[0].id), makeAssetsMetrics(assets[1].id)]
+        data: [makeAssetMetrics(assets[0].id), makeAssetMetrics(assets[1].id)]
       })
       const metrics = await makeSut().findAll()
       expect(metrics).toHaveLength(2)
@@ -49,9 +49,9 @@ describe('AssetsMetricsRepository', () => {
         client.asset.create({ data: makeAsset() })
       ])
       await client.assetMetrics.create({
-        data: makeAssetsMetrics(assets[0].id, { averagePrice: 100, marketPrice: 100 })
+        data: makeAssetMetrics(assets[0].id, { averagePrice: 100, marketPrice: 100 })
       })
-      const metricsData = assets.map(asset => makeAssetsMetrics(asset.id))
+      const metricsData = assets.map(asset => makeAssetMetrics(asset.id))
       await makeSut().store(metricsData)
       const metrics = await client.assetMetrics.findMany()
       expect(metrics).toHaveLength(3)
