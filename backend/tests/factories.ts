@@ -74,7 +74,7 @@ export const makeAssetMetrics = (
     assetId,
     averagePrice: 0,
     marketPrice: 0,
-    quantity: 0,
+    quantity: 10,
     return: 0,
     returnPercentage: 0,
     totalEquity: 0,

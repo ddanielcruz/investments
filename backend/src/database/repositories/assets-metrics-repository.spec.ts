@@ -24,13 +24,18 @@ describe('AssetsMetricsRepository', () => {
   })
 
   describe('findAll', () => {
-    it('finds all metrics with assets', async () => {
+    it('finds all metrics with assets ignoring assets with zero quantity', async () => {
       const assets = await Promise.all([
+        client.asset.create({ data: makeAsset() }),
         client.asset.create({ data: makeAsset() }),
         client.asset.create({ data: makeAsset() })
       ])
       await client.assetMetrics.createMany({
-        data: [makeAssetMetrics(assets[0].id), makeAssetMetrics(assets[1].id)]
+        data: [
+          makeAssetMetrics(assets[0].id),
+          makeAssetMetrics(assets[1].id),
+          makeAssetMetrics(assets[2].id, { quantity: 0 })
+        ]
       })
       const metrics = await makeSut().findAll()
       expect(metrics).toHaveLength(2)

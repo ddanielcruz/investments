@@ -16,7 +16,10 @@ export class AssetsMetricsRepository implements IAssetsMetricsRepository {
   constructor(private readonly client: PrismaClient) {}
 
   findAll(): Promise<IAssetMetricsWithAsset[]> {
-    return this.client.assetMetrics.findMany({ include: { asset: true } })
+    return this.client.assetMetrics.findMany({
+      where: { quantity: { gt: 0 } },
+      include: { asset: true }
+    })
   }
 
   async store(metrics: IAssetMetricsAttr[]): Promise<void> {
