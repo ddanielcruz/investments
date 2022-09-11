@@ -5,8 +5,8 @@ import {
   AssetSymbol,
   AssetType,
   Broker,
-  Transaction,
-  TransactionType
+  Operation,
+  OperationType
 } from '@prisma/client'
 
 import { IAsset, IAssetMetricsAttr } from '../src/database/models'
@@ -45,11 +45,11 @@ export const makeAssetSymbol = (other?: Partial<AssetSymbol>): AssetSymbol => {
   }
 }
 
-export const makeTransaction = (
+export const makeOperation = (
   assetId: number,
   brokerId: number,
-  other?: Partial<Transaction>
-): Transaction => {
+  other?: Partial<Operation>
+): Operation => {
   const id = makeId()
   return {
     id,
@@ -58,7 +58,7 @@ export const makeTransaction = (
     unitPrice: 10,
     quantity: 1,
     fee: 0,
-    type: TransactionType.Buy,
+    type: OperationType.Buy,
     date: new Date(),
     ...other
   }

@@ -22,7 +22,7 @@ export class AssetsRepository implements IAssetsRepository {
 
   async findInvested(): Promise<IAssetWithSymbols[]> {
     return (
-      await this.client.transaction.findMany({
+      await this.client.operation.findMany({
         select: { asset: { include: { symbols: true } } },
         distinct: 'assetId'
       })

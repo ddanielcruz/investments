@@ -2,25 +2,19 @@ import { injectable } from 'inversify'
 import { provide } from 'inversify-binding-decorators'
 import Joi from 'joi'
 
-import { TransactionType } from '@prisma/client'
+import { OperationType } from '@prisma/client'
 
-import {
-  IAsset,
-  IAssetWithSymbols,
-  IBroker,
-  ITransaction,
-  ITransactionAttr
-} from '../../../database/models'
+import { IAssetWithSymbols, IBroker, IOperation, IOperationAttr } from '../../../database/models'
 import {
   IAssetsRepository,
   IBrokersRepository,
-  ITransactionsRepository
+  IOperationsRepository
 } from '../../../database/repositories'
 import { PROCESS_PORTFOLIO_METRICS } from '../../../queue/jobs/process-portfolio-metrics'
 import { IQueueRepository } from '../../../queue/queue-repository'
 import { FieldError, NotFoundError, ValidationError } from '../../errors'
 
-const validator = Joi.object<ITransactionAttr>().keys({
+const validator = Joi.object<IOperationAttr>().keys({
   assetId: Joi.number().required(),
   brokerId: Joi.number().required(),
   date: Joi.date().iso().required(),
@@ -30,40 +24,40 @@ const validator = Joi.object<ITransactionAttr>().keys({
   type: Joi.string()
     .trim()
     .empty('')
-    .valid(...Object.values(TransactionType))
+    .valid(...Object.values(OperationType))
 })
 
 @injectable()
-export abstract class IStoreTransaction {
-  abstract execute(data: ITransactionAttr, id?: number): Promise<ITransaction>
+export abstract class IStoreOperation {
+  abstract execute(data: IOperationAttr, id?: number): Promise<IOperation>
 }
 
-@provide(IStoreTransaction)
-export class StoreTransaction implements IStoreTransaction {
+@provide(IStoreOperation)
+export class StoreOperation implements IStoreOperation {
   constructor(
     private readonly assetsRepository: IAssetsRepository,
     private readonly brokersRepository: IBrokersRepository,
-    private readonly transactionsRepository: ITransactionsRepository,
+    private readonly operationsRepository: IOperationsRepository,
     private readonly queueRepository: IQueueRepository
   ) {}
 
-  async execute(data: ITransactionAttr, id?: number): Promise<ITransaction> {
-    // TODO: Validate asset quantity on sell transactions (avoid negative quantities), separate into separate services
+  async execute(data: IOperationAttr, id?: number): Promise<IOperation> {
+    // TODO: Validate asset quantity on sell operations (avoid negative quantities), separate into separate services
     const normalizedData = await this.validate(data)
-    const transaction = id
-      ? await this.transactionsRepository.update(id, normalizedData)
-      : await this.transactionsRepository.create(normalizedData)
+    const operation = id
+      ? await this.operationsRepository.update(id, normalizedData)
+      : await this.operationsRepository.create(normalizedData)
 
-    if (!transaction) {
-      throw new NotFoundError('Transaction not found.')
+    if (!operation) {
+      throw new NotFoundError('Operation not found.')
     }
 
     await this.queueRepository.add(PROCESS_PORTFOLIO_METRICS)
 
-    return transaction
+    return operation
   }
 
-  private async validate(data: ITransactionAttr): Promise<ITransactionAttr> {
+  private async validate(data: IOperationAttr): Promise<IOperationAttr> {
     const { error, value } = validator.validate(data, { abortEarly: false, stripUnknown: true })
     const errors = FieldError.generate(error)
     let asset: IAssetWithSymbols | null = null

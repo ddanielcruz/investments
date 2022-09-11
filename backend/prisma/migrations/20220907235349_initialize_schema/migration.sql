@@ -5,7 +5,7 @@ CREATE TYPE "AssetType" AS ENUM ('Stock', 'Crypto', 'FixedIncome');
 CREATE TYPE "AssetProvider" AS ENUM ('CoinMarketcap', 'AlphaVantage');
 
 -- CreateEnum
-CREATE TYPE "TransactionType" AS ENUM ('Buy', 'Sell');
+CREATE TYPE "OperationType" AS ENUM ('Buy', 'Sell');
 
 -- CreateTable
 CREATE TABLE "assets" (
@@ -37,7 +37,7 @@ CREATE TABLE "brokers" (
 );
 
 -- CreateTable
-CREATE TABLE "transactions" (
+CREATE TABLE "operations" (
     "id" SERIAL NOT NULL,
     "asset_id" INTEGER NOT NULL,
     "broker_id" INTEGER NOT NULL,
@@ -45,9 +45,9 @@ CREATE TABLE "transactions" (
     "quantity" DOUBLE PRECISION NOT NULL,
     "fee" DOUBLE PRECISION NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
-    "type" "TransactionType" NOT NULL,
+    "type" "OperationType" NOT NULL,
 
-    CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "operations_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -60,7 +60,7 @@ CREATE UNIQUE INDEX "brokers_name_key" ON "brokers"("name");
 ALTER TABLE "assets_symbols" ADD CONSTRAINT "assets_symbols_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "assets"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "assets"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "operations" ADD CONSTRAINT "operations_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "assets"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_broker_id_fkey" FOREIGN KEY ("broker_id") REFERENCES "brokers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "operations" ADD CONSTRAINT "operations_broker_id_fkey" FOREIGN KEY ("broker_id") REFERENCES "brokers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,37 +1,37 @@
-import { TransactionType } from '@prisma/client'
+import { OperationType } from '@prisma/client'
 
 import { makeBroker } from '../../../../tests/factories'
 import {
   makeAssetsRepository,
   makeBrokersRepository,
   makeQueueRepository,
-  makeTransactionsRepository
+  makeOperationsRepository
 } from '../../../../tests/mocks/repositories'
-import { ITransactionAttr } from '../../../database/models'
+import { IOperationAttr } from '../../../database/models'
 import { PROCESS_PORTFOLIO_METRICS } from '../../../queue/jobs/process-portfolio-metrics'
 import { NotFoundError, ValidationError } from '../../errors'
-import { StoreTransaction } from './store-transaction'
+import { StoreOperation } from './store-operation'
 
 const makeSut = () => {
   const assetsRepoStub = makeAssetsRepository()
   const brokersRepoStub = makeBrokersRepository()
-  const txRepoStub = makeTransactionsRepository()
+  const txRepoStub = makeOperationsRepository()
   const queueRepoStub = makeQueueRepository()
-  const sut = new StoreTransaction(assetsRepoStub, brokersRepoStub, txRepoStub, queueRepoStub)
-  const data: ITransactionAttr = {
+  const sut = new StoreOperation(assetsRepoStub, brokersRepoStub, txRepoStub, queueRepoStub)
+  const data: IOperationAttr = {
     assetId: 1,
     brokerId: 1,
     date: new Date(),
     fee: 0,
     quantity: 1,
-    type: TransactionType.Buy,
+    type: OperationType.Buy,
     unitPrice: 10
   }
 
   return { assetsRepoStub, brokersRepoStub, txRepoStub, sut, data, queueRepoStub }
 }
 
-describe('StoreTransaction', () => {
+describe('StoreOperation', () => {
   it.each([
     { assetId: undefined },
     { brokerId: undefined },
@@ -72,7 +72,7 @@ describe('StoreTransaction', () => {
     await expect(promise).rejects.toThrow(ValidationError)
   })
 
-  it('creates a new transaction', async () => {
+  it('creates a new operation', async () => {
     const { sut, data, txRepoStub } = makeSut()
     const createSpy = jest.spyOn(txRepoStub, 'create')
     const createdTx = await sut.execute(data)
@@ -80,14 +80,14 @@ describe('StoreTransaction', () => {
     expect(createSpy).toHaveBeenCalledWith(data)
   })
 
-  it('updates transaction if informed an ID', async () => {
+  it('updates operation if informed an ID', async () => {
     const { sut, data, txRepoStub } = makeSut()
     const updateSpy = jest.spyOn(txRepoStub, 'update')
     await sut.execute(data, 1)
     expect(updateSpy).toHaveBeenCalledWith(1, data)
   })
 
-  it('throws if transaction is not found to update', async () => {
+  it('throws if operation is not found to update', async () => {
     const { sut, data, txRepoStub } = makeSut()
     jest.spyOn(txRepoStub, 'update').mockResolvedValueOnce(null)
     const promise = sut.execute(data, 1)

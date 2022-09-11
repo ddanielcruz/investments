@@ -13,7 +13,7 @@ model Asset {
   name String
   ticker String @unique
   type AssetType
-  transactions Transaction[]
+  operations Operation[]
   symbols AssetSymbol[]
   metrics AssetMetrics?
 }
@@ -32,12 +32,11 @@ model Broker {
   id Int @default(autoincrement()) @id
   name String @unique
   supportedTypes AssetType[]
-  transactions Transaction[]
+  operations Operation[]
 }
 
-// TODO: Rename model to Operation (operations)
-model Transaction {
-  @@map("transactions")
+model Operation {
+  @@map("operations")
   id Int @default(autoincrement()) @id
   assetId Int @map("asset_id")
   brokerId Int @map("broker_id")
@@ -45,7 +44,7 @@ model Transaction {
   quantity Float
   fee Float
   date DateTime
-  type TransactionType
+  type OperationType
   asset Asset @relation(fields: [assetId], references: [id], onDelete: Restrict)
   broker Broker @relation(fields: [brokerId], references: [id], onDelete: Restrict)
 }
@@ -76,7 +75,7 @@ enum AssetProvider {
   AlphaVantage
 }
 
-enum TransactionType {
+enum OperationType {
   Buy
   Sell
 }

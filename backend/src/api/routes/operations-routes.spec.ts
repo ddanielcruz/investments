@@ -2,12 +2,12 @@ import { Queue } from 'bullmq'
 import Redis from 'ioredis'
 import request from 'supertest'
 
-import { PrismaClient, TransactionType } from '@prisma/client'
+import { PrismaClient, OperationType } from '@prisma/client'
 
-import { makeAsset, makeBroker, makeTransaction } from '../../../tests/factories'
+import { makeAsset, makeBroker, makeOperation } from '../../../tests/factories'
 import prisma from '../../../tests/prisma'
 import { container } from '../../config/container'
-import { IAsset, IBroker, ITransactionAttr } from '../../database/models'
+import { IAsset, IBroker, IOperationAttr } from '../../database/models'
 import { api } from '../index'
 
 let client: PrismaClient
@@ -18,10 +18,10 @@ const makeSut = () => {
   return request(api)
 }
 
-describe('/transactions', () => {
+describe('/operations', () => {
   let asset: IAsset
   let broker: IBroker
-  let storeData: ITransactionAttr
+  let storeData: IOperationAttr
   const txDate = new Date()
 
   beforeAll(async () => {
@@ -37,12 +37,12 @@ describe('/transactions', () => {
       quantity: 1,
       fee: 0,
       date: txDate,
-      type: TransactionType.Buy
+      type: OperationType.Buy
     }
   })
 
   afterEach(async () => {
-    await client.transaction.deleteMany()
+    await client.operation.deleteMany()
     await queue.drain(true)
   })
 
@@ -54,17 +54,17 @@ describe('/transactions', () => {
   })
 
   describe('GET /', () => {
-    it('lists all transactions', async () => {
-      await client.transaction.create({ data: makeTransaction(asset.id, broker.id) })
-      const { body } = await makeSut().get('/transactions').expect(200)
+    it('lists all operations', async () => {
+      await client.operation.create({ data: makeOperation(asset.id, broker.id) })
+      const { body } = await makeSut().get('/operations').expect(200)
       expect(body).toHaveLength(1)
     })
   })
 
   describe('POST /', () => {
-    it('creates a new transaction', async () => {
-      const { body } = await makeSut().post('/transactions').send(storeData).expect(201)
-      const foundTxs = await client.transaction.findMany()
+    it('creates a new operation', async () => {
+      const { body } = await makeSut().post('/operations').send(storeData).expect(201)
+      const foundTxs = await client.operation.findMany()
       expect(foundTxs).toHaveLength(1)
       expect(body.id).toBe(foundTxs[0].id)
       expect(body).toEqual({
@@ -75,26 +75,26 @@ describe('/transactions', () => {
         quantity: 1,
         fee: 0,
         date: txDate.toISOString(),
-        type: TransactionType.Buy
+        type: OperationType.Buy
       })
     })
 
     it('returns an error when received invalid data', async () => {
-      await makeSut().post('/transactions').send({}).expect(400)
-      await makeSut().post('/transactions').expect(400)
-      const foundTxs = await client.transaction.findMany()
+      await makeSut().post('/operations').send({}).expect(400)
+      await makeSut().post('/operations').expect(400)
+      const foundTxs = await client.operation.findMany()
       expect(foundTxs).toHaveLength(0)
     })
   })
 
   describe('PUT /:id', () => {
-    it('updates a transaction', async () => {
-      const { body: tx } = await makeSut().post('/transactions').send(storeData).expect(201)
+    it('updates a operation', async () => {
+      const { body: tx } = await makeSut().post('/operations').send(storeData).expect(201)
       const response = await makeSut()
-        .put(`/transactions/${tx.id}`)
+        .put(`/operations/${tx.id}`)
         .send({ ...storeData, unitPrice: 100, fee: 2 })
         .expect(200)
-      const foundTxs = await client.transaction.findMany()
+      const foundTxs = await client.operation.findMany()
       expect(response.body.id).toEqual(tx.id)
       expect(foundTxs).toHaveLength(1)
       expect(response.body).toEqual({
@@ -105,29 +105,29 @@ describe('/transactions', () => {
         quantity: 1,
         fee: 2,
         date: txDate.toISOString(),
-        type: TransactionType.Buy
+        type: OperationType.Buy
       })
     })
 
     it('returns an error when received invalid data', async () => {
-      const { body: tx } = await makeSut().post('/transactions').send(storeData).expect(201)
-      await makeSut().put(`/transactions/${tx.id}`).send({}).expect(400)
-      await makeSut().put(`/transactions/${tx.id}`).expect(400)
+      const { body: tx } = await makeSut().post('/operations').send(storeData).expect(201)
+      await makeSut().put(`/operations/${tx.id}`).send({}).expect(400)
+      await makeSut().put(`/operations/${tx.id}`).expect(400)
     })
 
-    it('returns an error when transaction is not found', async () => {
-      await makeSut().put('/transactions/100000').send(storeData).expect(404)
+    it('returns an error when operation is not found', async () => {
+      await makeSut().put('/operations/100000').send(storeData).expect(404)
     })
   })
 
   describe('DELETE /:id', () => {
-    it('deletes a transaction', async () => {
-      const { body: tx } = await makeSut().post('/transactions').send(storeData).expect(201)
-      await makeSut().delete(`/transactions/${tx.id}`).expect(204)
+    it('deletes a operation', async () => {
+      const { body: tx } = await makeSut().post('/operations').send(storeData).expect(201)
+      await makeSut().delete(`/operations/${tx.id}`).expect(204)
     })
 
-    it('returns an error when transaction is not found', async () => {
-      await makeSut().delete('/transactions/100000').expect(404)
+    it('returns an error when operation is not found', async () => {
+      await makeSut().delete('/operations/100000').expect(404)
     })
   })
 })

@@ -3,17 +3,17 @@ import {
   IAssetWithSymbols,
   IAsset,
   IBroker,
-  ITransaction,
-  ITransactionAttr,
-  ITransactionWithEntities
+  IOperation,
+  IOperationAttr,
+  IOperationWithEntities
 } from '../../src/database/models'
 import {
   IAssetsRepository,
   IBrokersRepository,
-  ITransactionsRepository
+  IOperationsRepository
 } from '../../src/database/repositories'
 import { IQueueRepository } from '../../src/queue/queue-repository'
-import { makeAsset, makeAssetSymbol, makeBroker, makeTransaction } from '../factories'
+import { makeAsset, makeAssetSymbol, makeBroker, makeOperation } from '../factories'
 
 export const makeAssetsRepository = (): IAssetsRepository => {
   class AssetsRepositoryStub implements IAssetsRepository {
@@ -45,25 +45,25 @@ export const makeBrokersRepository = (): IBrokersRepository => {
   return new BrokersRepositoryStub()
 }
 
-export const makeTransactionsRepository = (): ITransactionsRepository => {
-  class TransactionsRepositoryStub implements ITransactionsRepository {
-    async create(data: ITransactionAttr): Promise<ITransaction> {
-      return { ...makeTransaction(1, 1), ...data }
+export const makeOperationsRepository = (): IOperationsRepository => {
+  class OperationsRepositoryStub implements IOperationsRepository {
+    async create(data: IOperationAttr): Promise<IOperation> {
+      return { ...makeOperation(1, 1), ...data }
     }
 
-    async delete(id: number): Promise<ITransaction | null> {
-      return { ...makeTransaction(1, 1), id }
+    async delete(id: number): Promise<IOperation | null> {
+      return { ...makeOperation(1, 1), id }
     }
 
-    async findAll(): Promise<ITransactionWithEntities[]> {
+    async findAll(): Promise<IOperationWithEntities[]> {
       return []
     }
 
-    async update(id: number, data: ITransactionAttr): Promise<ITransaction | null> {
-      return { ...makeTransaction(1, 1), ...data, id }
+    async update(id: number, data: IOperationAttr): Promise<IOperation | null> {
+      return { ...makeOperation(1, 1), ...data, id }
     }
   }
-  return new TransactionsRepositoryStub()
+  return new OperationsRepositoryStub()
 }
 
 export const makeCacheRepository = (): ICacheRepository => {
