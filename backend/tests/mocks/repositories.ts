@@ -5,9 +5,11 @@ import {
   IBroker,
   IOperation,
   IOperationAttr,
-  IOperationWithEntities
+  IOperationWithEntities,
+  IAssetMetricsWithAsset
 } from '../../src/database/models'
 import {
+  IAssetsMetricsRepository,
   IAssetsRepository,
   IBrokersRepository,
   IOperationsRepository
@@ -85,4 +87,15 @@ export const makeQueueRepository = (): IQueueRepository => {
   }
 
   return new QueueRepositoryStub()
+}
+
+export const makeAssetsMetricsRepository = (): IAssetsMetricsRepository => {
+  class AssetsMetricsRepositoryStub implements IAssetsMetricsRepository {
+    async findAll(): Promise<IAssetMetricsWithAsset[]> {
+      return []
+    }
+
+    async store(): Promise<void> {}
+  }
+  return new AssetsMetricsRepositoryStub()
 }

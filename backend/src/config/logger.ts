@@ -10,5 +10,6 @@ export const logger = createLogger({
     format.colorize(),
     format.timestamp(),
     format.printf(info => `[${[info.timestamp]}] ${info.level}: ${info.message}`)
-  )
+  ),
+  silent: process.env.NODE_ENV === 'test'
 })

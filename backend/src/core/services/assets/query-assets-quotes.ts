@@ -5,6 +5,7 @@ import { provide } from 'inversify-binding-decorators'
 import { AssetProvider } from '@prisma/client'
 
 import { HOUR, ICacheRepository } from '../../../cache/cache-repository'
+import { logger } from '../../../config/logger'
 import { IAsset, IAssetWithSymbols } from '../../../database/models'
 
 export interface IAssetQuote extends IAsset {
@@ -45,6 +46,7 @@ export class QueryAssetsQuotes implements IQueryAssetsQuotes {
   }
 
   async execute(assets: IAssetWithSymbols[]): Promise<IAssetQuote[]> {
+    logger.info(`Querying quotes from assets [${assets.map(asset => asset.ticker).join(', ')}]`)
     const quotes: IAssetQuote[] = []
 
     // Map assets by provider
@@ -63,7 +65,7 @@ export class QueryAssetsQuotes implements IQueryAssetsQuotes {
     }
 
     // Query latest prices from Alpha Vantage
-    if (byProvider[AssetProvider.CoinMarketcap]) {
+    if (byProvider[AssetProvider.AlphaVantage]) {
       for (const asset of byProvider[AssetProvider.AlphaVantage]) {
         quotes.push(await this.queryAlphaVantage(asset))
       }

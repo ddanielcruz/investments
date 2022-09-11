@@ -17,11 +17,16 @@ async function bootstrap() {
     config.name,
     async job => {
       logger.info(`Processing job ${job.name}:${job.id}`)
-      if (!jobs[job.name]) {
-        throw new Error(`Job ${job.name} not supported/mapped.`)
-      }
+      try {
+        if (!jobs[job.name]) {
+          throw new Error(`Job ${job.name} not supported/mapped.`)
+        }
 
-      return await jobs[job.name].execute(job.data)
+        return await jobs[job.name].execute(job.data)
+      } catch (error) {
+        logger.error(error)
+        throw error
+      }
     },
     {
       connection: container.get(Redis),
