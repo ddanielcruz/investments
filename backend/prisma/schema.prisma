@@ -35,6 +35,7 @@ model Broker {
   transactions Transaction[]
 }
 
+// TODO: Rename model to Operation (operations)
 model Transaction {
   @@map("transactions")
   id Int @default(autoincrement()) @id

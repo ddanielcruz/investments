@@ -45,6 +45,7 @@ export class StoreTransaction implements IStoreTransaction {
   ) {}
 
   async execute(data: ITransactionAttr, id?: number): Promise<ITransaction> {
+    // TODO: Validate asset quantity on sell transactions (avoid negative quantities), separate into separate services
     const normalizedData = await this.validate(data)
     const transaction = id
       ? await this.transactionsRepository.update(id, normalizedData)

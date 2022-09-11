@@ -14,6 +14,8 @@ export default {
     'src/api/routes/*.ts',
     'src/database/repositories/*.ts',
     'src/cache/*-repository.ts',
+    'src/queue/*-repository.ts',
+    'src/queue/jobs/*.ts',
     '!src/**/index.ts'
   ],
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
