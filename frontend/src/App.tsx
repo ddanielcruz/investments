@@ -1,5 +1,9 @@
-function App() {
-  return <div className="App" />
-}
+import Dashboard from './pages/Dashboard'
 
-export default App
+export default function App() {
+  return (
+    <main>
+      <Dashboard />
+    </main>
+  )
+}
