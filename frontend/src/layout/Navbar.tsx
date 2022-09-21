@@ -2,21 +2,13 @@ import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { Box, Button, Flex, HStack, Link, useColorMode, useColorModeValue } from '@chakra-ui/react'
 
 export default function Navbar() {
-  const linkColor = useColorModeValue('gray.600', 'gray.200')
+  const linkColor = useColorModeValue('gray.500', 'gray.300')
   const linkHoverColor = useColorModeValue('gray.800', 'white')
   const { colorMode, toggleColorMode } = useColorMode()
 
   return (
-    <Box as="nav" shadow="base">
-      <Flex
-        py={2}
-        px={4}
-        minH="60px"
-        align="center"
-        maxW="container.xl"
-        m="auto"
-        bg={useColorModeValue('white', 'gray.800')}
-      >
+    <Box as="nav" shadow="base" bg={useColorModeValue('white', 'gray.800')}>
+      <Flex py={2} px={4} minH="60px" align="center" maxW="container.xl" mx="auto">
         <Flex grow={1}>
           <Link
             href="/"
